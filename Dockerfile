@@ -2,9 +2,9 @@
 FROM gcc:13 AS builder
 
 WORKDIR /app
-COPY main.cpp .
+COPY 1.cpp .
 
-RUN g++ -O2 -o app main.cpp
+RUN g++ -O2 -o app 1.cpp
 
 # ---- Stage 2: Runtime ----
 FROM debian:bookworm-slim
