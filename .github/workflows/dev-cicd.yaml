@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
@@ -25,7 +25,7 @@ jobs:
 
   deploy:
     needs: build-and-test
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
@@ -34,42 +34,7 @@ jobs:
       - name: Compile release binary
         run: g++ -O2 -o app main.cpp
 
-      - name: Deploy (placeholder)
-        run: echo "Add your deploy steps here (e.g. scp to server, docker push, etc.)"name: C++ CI/CD
-
-on:
-  push:
-    branches: [ "dev" ]
-  pull_request:
-    branches: [ "dev" ]
-
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install build tools
-        run: sudo apt update && sudo apt install -y g++ make
-
-      - name: Compile
-        run: g++ -o app main.cpp
-
-      - name: Run
-        run: ./app
-
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Compile release binary
-        run: g++ -O2 -o app main.cpp
-
-      - name: Deploy (placeholder)
-        run: echo "Add your deploy steps here (e.g. scp to server, docker push, etc.)"
+      - name: Deploy
+        run: |
+          sudo cp app /usr/local/bin/app
+          echo "Deployed to /usr/local/bin/app on this server"
