@@ -23,18 +23,20 @@ jobs:
       - name: Run
         run: ./app
 
-  deploy:
+  docker-build-deploy:
     needs: build-and-test
     runs-on: self-hosted
     if: github.ref == 'refs/heads/main'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Compile release binary
-        run: g++ -O2 -o app main.cpp
+      - name: Build Docker image
+        run: docker build -t hello-cpp:latest .
 
-      - name: Deploy
-        run: |
-          sudo cp app /usr/local/bin/app
-          echo "Deployed to /usr/local/bin/app on this server"
+      - name: Stop old container (if running)
+        run: docker rm -f hello-cpp || true
+
+      - name: Run new container
+        run: docker run -d --name hello-cpp hello-cpp:latest
